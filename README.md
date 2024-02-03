@@ -2,6 +2,6 @@
 
 TWITTER INSIGHT ENGINE USING KUBERNETES
 
-token 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
+token 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
 
 new action∂
