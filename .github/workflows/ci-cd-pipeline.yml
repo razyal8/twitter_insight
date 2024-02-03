@@ -15,7 +15,7 @@ jobs:
         run: kubectl proxy --port=6443 &
 
       - name: Wait for kubectl proxy to start
-        run: sleep 20
+        run: sleep 30
 
       - name: Set up Kubernetes
         uses: azure/setup-kubectl@v3
