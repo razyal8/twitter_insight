@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN }}
       GITHUB_CONTAINER_REGISTRY: ${{ secrets.GITHUB_CONTAINER_REGISTRY }}
 
     steps:
@@ -29,13 +29,9 @@ jobs:
 
       - name: Build and Push Docker Images
         run: |
-          docker build -t $GITHUB_CONTAINER_REGISTRY/counter-incrementer:${{ github.sha }} -f Dockerfiles/Dockerfile.counter-incrementer .
-          docker build -t $GITHUB_CONTAINER_REGISTRY/counter-printer:${{ github.sha }} -f Dockerfiles/Dockerfile.counter-printer .
-
-          echo $GITHUB_TOKEN | docker login $GITHUB_CONTAINER_REGISTRY -u ${{ github.actor }} --password-stdin
-
-          docker push $GITHUB_CONTAINER_REGISTRY/counter-incrementer:${{ github.sha }}
-          docker push $GITHUB_CONTAINER_REGISTRY/counter-printer:${{ github.sha }}
+          docker login --username razyal8 --password ${{ secrets.TOKEN }}
+          docker build . --tag ghcr.io/razyal8/twitter_insight:latest
+          docker push ghcr.io/razyal8/twitter_insight:latest
 
       - name: Deploy to Kubernetes
         run: |
