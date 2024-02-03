@@ -17,7 +17,7 @@ jobs:
 
       - name: Build and Push Docker Images
         run: |
-          docker login --username razyal8 --password ${{ secrets.DOCKER_TOKEN }}
+          docker login --username razyal --password ${{ secrets.DOCKER_TOKEN }}
           docker build . -t razyal8/twitter_insight:latest
           docker push razyal8/twitter_insight:latest
 
