@@ -1,0 +1,40 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_CONTAINER_REGISTRY: ${{ secrets.GITHUB_CONTAINER_REGISTRY }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1.0.5
+        with:
+          version: "latest"
+
+      - name: Build and Push Docker Images
+        run: |
+          docker build -t $GITHUB_CONTAINER_REGISTRY/counter-incrementer:${{ github.sha }} -f Dockerfiles/Dockerfile.counter-incrementer .
+          docker build -t $GITHUB_CONTAINER_REGISTRY/counter-printer:${{ github.sha }} -f Dockerfiles/Dockerfile.counter-printer .
+
+          echo $GITHUB_TOKEN | docker login $GITHUB_CONTAINER_REGISTRY -u ${{ github.actor }} --password-stdin
+
+          docker push $GITHUB_CONTAINER_REGISTRY/counter-incrementer:${{ github.sha }}
+          docker push $GITHUB_CONTAINER_REGISTRY/counter-printer:${{ github.sha }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f Kubernetes/counter-incrementer/counter-incrementer-deployment.yaml
+          kubectl apply -f Kubernetes/counter-incrementer/counter-incrementer-service.yaml
+          kubectl apply -f Kubernetes/counter-printer/counter-printer-deployment.yaml
+          kubectl apply -f Kubernetes/counter-printer/counter-printer-service.yaml

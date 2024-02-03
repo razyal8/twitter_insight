@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counter-incrementer-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: counter-incrementer
+  template:
+    metadata:
+      labels:
+        app: counter-incrementer
+    spec:
+      containers:
+        - name: counter-incrementer-container
+          image: your-docker-hub-username/counter-incrementer:latest
