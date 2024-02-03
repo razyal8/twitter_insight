@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Kubernetes
+        uses: azure/setup-kubectl@v1.0.5
+        with:
+          version: "latest"
+
       - name: Build and Push Docker Images
         run: |
           docker login --username razyal8 --password ${{ secrets.TOKEN }} ghcr.io
