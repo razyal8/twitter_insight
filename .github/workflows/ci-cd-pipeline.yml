@@ -18,17 +18,13 @@ jobs:
         with:
           version: "latest"
 
-      - name: Start kubectl proxy
-        run: kubectl proxy --port=6443 &
+      - name: Get Docker Desktop IP
+        id: get_ip
+        run: echo "::set-output name=ip::$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}' | cut -d'/' -f3 | cut -d':' -f1)"
 
-      - name: Wait for kubectl proxy to start
-        run: sleep 30
-
-      - name: Authenticate with Kubernetes cluster
-        run: kubectl config set-cluster docker-desktop --server=http://localhost:6443 --insecure-skip-tls-verify
-
-      - name: Set context to docker-desktop
+      - name: Set up Kubernetes with Docker Desktop IP
         run: |
+          kubectl config set-cluster docker-desktop --server=https://${{ steps.get_ip.outputs.ip }} --insecure-skip-tls-verify
           kubectl config set-context docker-desktop --cluster=docker-desktop
           kubectl config use-context docker-desktop
 
