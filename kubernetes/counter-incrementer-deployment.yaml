@@ -1,17 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: counter-incrementer-deployment
+  name: flask-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: counter-incrementer
+      app: flask-app
   template:
     metadata:
       labels:
-        app: counter-incrementer
+        app: flask-app
     spec:
       containers:
-        - name: counter-incrementer-container
+        - name: flask-app
           image: ghcr.io/razyal8/twitter_insight:latest
+          ports:
+            - containerPort: 80

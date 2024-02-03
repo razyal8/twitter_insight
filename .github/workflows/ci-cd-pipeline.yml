@@ -25,3 +25,9 @@ jobs:
         run: |
           kubectl apply -f kubernetes/counter-incrementer-deployment.yaml
           kubectl apply -f kubernetes/counter-incrementer-service.yaml
+
+      - name: Check status
+        run: |
+          kubectl get deployments
+          kubectl get pods
+          kubectl get services
