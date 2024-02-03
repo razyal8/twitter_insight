@@ -40,8 +40,8 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f kubernetes/counter-incrementer-deployment.yaml
-          kubectl apply -f kubernetes/counter-incrementer-service.yaml
+          kubectl apply -f kubernetes/counter-incrementer-deployment.yaml --username razyal --password ${{ secrets.DOCKER_TOKEN }}
+          kubectl apply -f kubernetes/counter-incrementer-service.yaml --username razyal --password ${{ secrets.DOCKER_TOKEN }}
 
       - name: Check status
         run: |
