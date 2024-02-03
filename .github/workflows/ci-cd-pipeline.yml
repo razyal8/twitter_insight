@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Kubernetes
-        uses: azure/setup-kubectl@v1.0.5
+        uses: azure/setup-kubectl
         with:
           version: "latest"
 
