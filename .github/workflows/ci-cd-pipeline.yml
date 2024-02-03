@@ -14,7 +14,12 @@ jobs:
       GITHUB_CONTAINER_REGISTRY: ${{ secrets.GITHUB_CONTAINER_REGISTRY }}
 
     steps:
-      - name: Checkout Repository
+      - name: prints
+        run: |
+          echo "Built Docker images:"
+          echo "token: ${{ secrets.GITHUB_TOKEN }}"
+          echo ${{ secrets.GITHUB_TOKEN }}
+
         uses: actions/checkout@v2
 
       - name: Install kubectl
