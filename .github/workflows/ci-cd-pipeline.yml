@@ -15,6 +15,13 @@ jobs:
         with:
           version: "latest"
 
+      - name: Set up Docker
+        uses: docker/setup-docker@v2
+        with:
+          docker-username: razyal
+          docker-password: xc7Rshsg
+          registry-url: ghcr.io
+
       - name: Build and Push Docker Images
         run: |
           docker login --username razyal8 --password ${{ secrets.TOKEN }} ghcr.io
