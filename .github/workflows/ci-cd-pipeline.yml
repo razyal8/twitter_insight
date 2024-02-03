@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Expose Docker Desktop Kubernetes API
+        run: kubectl proxy --port=6443 &
+
       - name: Set up Kubernetes
         uses: azure/setup-kubectl@v3
         with:
@@ -21,11 +25,11 @@ jobs:
           docker build . -t razyal/twitter_insight:latest
           docker push razyal/twitter_insight:latest
 
-      - name: Kubernets
+      - name: Kubernetes Configuration
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.DOCKER_DESKTOP_TOKEN }}" | base64 --decode > $HOME/.kube/config
-          kubectl config get-contexts
+          kubectl config set-cluster docker-desktop --server=http://localhost:6443
+          kubectl config set-context docker-desktop --cluster=docker-desktop
           kubectl config use-context docker-desktop
 
       - name: Deploy to Kubernetes
