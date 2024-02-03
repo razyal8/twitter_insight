@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and Push Docker Images
         run: |
-          docker login --username razyal8 --password ${{ secrets.TOKEN }} ghcr.io
+          echo ${{ secrets.TOKEN }} | docker login ghcr.io -u razyal8 --password-stdin
           docker build . --tag ghcr.io/razyal8/twitter_insight:latest
           docker push ghcr.io/razyal8/twitter_insight:latest
 
