@@ -25,7 +25,7 @@ jobs:
         run: sleep 30
 
       - name: Authenticate with Kubernetes cluster
-        run: kubectl config set-cluster docker-desktop --server=https://localhost:6443 --insecure-skip-tls-verify
+        run: kubectl config set-cluster docker-desktop --server=http://localhost:6443 --insecure-skip-tls-verify
 
       - name: Set context to docker-desktop
         run: |
@@ -40,8 +40,8 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -f kubernetes/counter-incrementer-deployment.yaml --username razyal --password ${{ secrets.DOCKER_TOKEN }} --server=https://localhost:6443 --validate=false
-          kubectl apply -f kubernetes/counter-incrementer-service.yaml --username razyal --password ${{ secrets.DOCKER_TOKEN }} --server=https://localhost:6443 --validate=false
+          kubectl apply -f kubernetes/counter-incrementer-deployment.yaml --username razyal --password ${{ secrets.DOCKER_TOKEN }} --validate=false
+          kubectl apply -f kubernetes/counter-incrementer-service.yaml --username razyal --password ${{ secrets.DOCKER_TOKEN }} --validate=false
 
       - name: Check status
         run: |
