@@ -8,16 +8,10 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.TOKEN }}
-
     steps:
-
       - uses: actions/checkout@v3
       - name: Build and Push Docker Images
         run: |
-          echo ${{ secrets.TOKEN }} | docker login ghcr.io -u razyal8 --password-stdin --disable-content-trust
+          docker login --username razyal8 --password ${{ secrets.TOKEN }}
           docker build . --tag ghcr.io/razyal8/twitter_insight:latest
           docker push ghcr.io/razyal8/twitter_insight:latest
-
