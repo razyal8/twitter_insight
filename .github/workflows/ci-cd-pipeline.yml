@@ -23,6 +23,8 @@ jobs:
 
       - name: Kubernets
         run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.DOCKER_DESKTOP_TOKEN }}" | base64 --decode > $HOME/.kube/config
           kubectl config get-contexts
           kubectl config use-context docker-desktop
 
