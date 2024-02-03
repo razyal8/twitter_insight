@@ -14,6 +14,9 @@ jobs:
       - name: Expose Docker Desktop Kubernetes API
         run: kubectl proxy --port=6443 &
 
+      - name: Wait for kubectl proxy to start
+        run: sleep 10
+
       - name: Set up Kubernetes
         uses: azure/setup-kubectl@v3
         with:
@@ -22,15 +25,32 @@ jobs:
       - name: Kubernetes Configuration
         run: |
           mkdir -p $HOME/.kube
-          kubectl config set-cluster docker-desktop --server=http://localhost:6443
+          kubectl config set-cluster docker-desktop --server=http://localhost:6443 --insecure-skip-tls-verify
           kubectl config set-context docker-desktop --cluster=docker-desktop
           kubectl config use-context docker-desktop
 
       - name: Check Kubernetes Configuration
         run: kubectl config view
 
-      - name: Check Kubernetes API Server
+      - name: Check Kubernetes Cluster Info
         run: kubectl cluster-info
 
+      - name: Diagnostic Info
+        run: kubectl cluster-info dump
+
+      - name: Build and Push Docker Images
+        run: |
+          docker login --username razyal --password ${{ secrets.DOCKER_TOKEN }}
+          docker build . -t razyal/twitter_insight:latest
+          docker push razyal/twitter_insight:latest
+
       - name: Deploy to Kubernetes
-        run: kubectl apply -f kubernetes/counter-incrementer-deployment.yaml --validate=false
+        run: |
+          kubectl apply -f kubernetes/counter-incrementer-deployment.yaml --validate=false
+          kubectl apply -f kubernetes/counter-incrementer-service.yaml --validate=false
+
+      - name: Check status
+        run: |
+          kubectl get deployments
+          kubectl get pods
+          kubectl get services
