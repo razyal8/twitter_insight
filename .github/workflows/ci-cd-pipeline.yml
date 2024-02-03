@@ -11,31 +11,13 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      GITHUB_CONTAINER_REGISTRY: ${{ secrets.GITHUB_CONTAINER_REGISTRY }}
 
     steps:
-      - name: prints
-        run: |
-          echo "Built Docker images:"
-          echo "token: ${{ secrets.GITHUB_TOKEN }}"
-          echo secrets.GITHUB_TOKEN
 
-      - uses: actions/checkout@v2
-
-      - name: Install kubectl
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install -y kubectl
-
+      - uses: actions/checkout@v3
       - name: Build and Push Docker Images
         run: |
-          echo ${{ secrets.TOKEN }} | docker login ghcr.io -u razyal8 --password-stdin
+          echo ${{ secrets.TOKEN }} | docker login ghcr.io -u razyal8 --password-stdin --disable-content-trust
           docker build . --tag ghcr.io/razyal8/twitter_insight:latest
           docker push ghcr.io/razyal8/twitter_insight:latest
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f Kubernetes/counter-incrementer/counter-incrementer-deployment.yaml
-          kubectl apply -f Kubernetes/counter-incrementer/counter-incrementer-service.yaml
-          kubectl apply -f Kubernetes/counter-printer/counter-printer-deployment.yaml
-          kubectl apply -f Kubernetes/counter-printer/counter-printer-service.yaml
