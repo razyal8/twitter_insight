@@ -8,35 +8,27 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Expose Docker Desktop Kubernetes API
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Kubernetes
+        uses: azure/setup-kubectl@v1
+        with:
+          version: "latest"
+
+      - name: Start kubectl proxy
         run: kubectl proxy --port=6443 &
 
       - name: Wait for kubectl proxy to start
         run: sleep 30
 
-      - name: Set up Kubernetes
-        uses: azure/setup-kubectl@v3
-        with:
-          version: "latest"
+      - name: Authenticate with Kubernetes cluster
+        run: kubectl config set-cluster docker-desktop --server=http://localhost:6443 --insecure-skip-tls-verify
 
-      - name: Kubernetes Configuration
-        run: |
-          mkdir -p $HOME/.kube
-          kubectl config set-cluster docker-desktop --server=http://10.96.0.1:443 --insecure-skip-tls-verify
-          kubectl config set-context docker-desktop --cluster=docker-desktop
-          kubectl config use-context docker-desktop
-
-      - name: Check Kubernetes Configuration
-        run: kubectl config view
-
-      - name: Check Kubernetes Cluster Info
-        run: kubectl cluster-info
-
-      - name: Diagnostic Info
-        run: kubectl cluster-info dump
+      - name: Set context to docker-desktop
+        run: kubectl config use-context docker-desktop
 
       - name: Build and Push Docker Images
         run: |
