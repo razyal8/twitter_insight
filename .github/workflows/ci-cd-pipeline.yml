@@ -19,12 +19,6 @@ jobs:
         with:
           version: "latest"
 
-      - name: Build and Push Docker Images
-        run: |
-          docker login --username razyal --password ${{ secrets.DOCKER_TOKEN }}
-          docker build . -t razyal/twitter_insight:latest
-          docker push razyal/twitter_insight:latest
-
       - name: Kubernetes Configuration
         run: |
           mkdir -p $HOME/.kube
@@ -32,13 +26,11 @@ jobs:
           kubectl config set-context docker-desktop --cluster=docker-desktop
           kubectl config use-context docker-desktop
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f kubernetes/counter-incrementer-deployment.yaml --validate=false
-          kubectl apply -f kubernetes/counter-incrementer-service.yaml --validate=false
+      - name: Check Kubernetes Configuration
+        run: kubectl config view
 
-      - name: Check status
-        run: |
-          kubectl get deployments
-          kubectl get pods
-          kubectl get services
+      - name: Check Kubernetes API Server
+        run: kubectl cluster-info
+
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f kubernetes/counter-incrementer-deployment.yaml --validate=false
