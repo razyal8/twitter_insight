@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "Built Docker images:"
           echo "token: ${{ secrets.GITHUB_TOKEN }}"
-          echo ${{ secrets.GITHUB_TOKEN }}
+          echo secrets.GITHUB_TOKEN
 
       - uses: actions/checkout@v2
 
