@@ -24,7 +24,8 @@ jobs:
 
       - name: Set up Kubernetes with Docker Desktop IP
         run: |
-          kubectl config set-cluster docker-desktop --server=http://${{ steps.get_ip.outputs.ip }} --insecure-skip-tls-verify
+          docker_desktop_ip=https://${{ steps.get_ip.outputs.ip }}
+          kubectl config set-cluster docker-desktop --server=${docker_desktop_ip}:6443 --insecure-skip-tls-verify
           kubectl config set-context docker-desktop --cluster=docker-desktop
           kubectl config use-context docker-desktop
 
