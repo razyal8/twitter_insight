@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: counter-incrementer-container
-          image: your-docker-hub-username/counter-incrementer:latest
+          image: ghcr.io/razyal8/twitter_insight:latest
