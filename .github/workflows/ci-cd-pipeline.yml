@@ -18,8 +18,8 @@ jobs:
       - name: Build and Push Docker Images
         run: |
           docker login --username razyal --password ${{ secrets.DOCKER_TOKEN }}
-          docker build . -t razyal8/twitter_insight:latest
-          docker push razyal8/twitter_insight:latest
+          docker build . -t razyal/twitter_insight:latest
+          docker push razyal/twitter_insight:latest
 
       - name: Kubernets
         run: |
